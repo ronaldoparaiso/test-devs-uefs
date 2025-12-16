@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-api-rest
+    container_name: laravel-api-rest-app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: laravel
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      # Adicione outras variáveis de ambiente do Laravel aqui
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: base64:YOUR_APP_KEY_HERE # Será gerada no .env
+      
+  db:
+    image: mysql:8.0
+    container_name: laravel-api-rest-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  dbdata:
